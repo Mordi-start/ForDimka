@@ -4,31 +4,43 @@ import java.util.NoSuchElementException;
 
 public class MyIterator implements Iterator<Integer> {
     private Integer number;
+    private Integer next;
     Iterator<Integer> itr;
-    private int count;
-    private int index;
+//    private int count;
+//    private int index;
 
     public MyIterator(Collection<Integer> collection) {
         itr = collection.iterator();
-        for (int i : collection) {
-            if (i % 2 != 0) {
-                index++;
-            }
-        }
-        if (index == collection.size()) {
-            throw new NoSuchElementException();
-        }
     }
 
     @Override
     public boolean hasNext() {
+//        while (itr.hasNext()) {
+//            if (next != null && next % 2 == 0) {
+//                number = next;
+//            }
+//            if ((next = itr.next()) != null && (next % 2 == 0 || number % 2 == 0)) {
+//                return true;
+//            }
+//            return  (number = itr.next()) != null;
+//        }
+//        return false;
+
         while (itr.hasNext()) {
-            number = itr.next();
-            if (number != null && number % 2 == 0) {
-                count++;
+            if (next == null) {
+                next = itr.next();
+            }
+            if (next % 2 == 0) {
                 return true;
-            } else {
-                continue;
+            }
+            else {
+                while (itr.hasNext()) {
+                    next = itr.next();
+                    if (next % 2 == 0) {
+                        number = next;
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -36,18 +48,15 @@ public class MyIterator implements Iterator<Integer> {
 
     @Override
     public Integer next() throws NullPointerException {
-        if (count != 0 && number != null && number % 2 == 0) {
+//        number = next;
+        if (hasNext()) {
+            number = next;
+            next = null;
             return number;
-        } else {
-            while (itr.hasNext()) {
-                if ((number = itr.next()) != null && number % 2 == 0) {
-                    break;
-                }
-            }
         }
-        if (number % 2 != 0) {
-            throw new NoSuchElementException();
+        if (next % 2 == 0) {
+            return next;
         }
-        return number;
+        throw new NoSuchElementException();
     }
 }
